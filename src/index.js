@@ -1,17 +1,44 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
 
+import App from "./App";
+import * as serviceWorker from "./serviceWorker";
+
+import { ChakraProvider } from "@chakra-ui/react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
+//import styles from "./App.css";
+import "./reset.css";
+
+//contexts
+import { BasketProvider } from "./contexts/BasketContext"
+import { FavoriteProvider } from "./contexts/FavoriteContext";
+
+
+//redux
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+
+const queryClient = new QueryClient();
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider>
+          <Provider store={store}>
+            <BrowserRouter>
+            <BasketProvider>
+              <FavoriteProvider>
+                <App />
+              </FavoriteProvider>
+            </BasketProvider>
+            </BrowserRouter>
+          </Provider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </ChakraProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+serviceWorker.unregister();
